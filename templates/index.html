@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SynGen — Synthetic Data Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/static/css/main.css"/>
+</head>
+<body>
+
+<div class="noise"></div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-grid">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      <span class="logo-name">SynGen</span>
+      <span class="logo-tag">v1.0</span>
+    </div>
+    <nav class="nav">
+      <a href="#generate" class="nav-link active">Generate</a>
+      <a href="#docs" class="nav-link">API Docs</a>
+      <span class="api-status" id="apiStatus">
+        <span class="dot"></span> API Ready
+      </span>
+    </nav>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">Prompt-Driven Synthetic Data</div>
+    <h1 class="hero-title">Describe it.<br/><em>Generate it.</em></h1>
+    <p class="hero-sub">Turn natural language into structured, realistic datasets — instantly.</p>
+  </section>
+
+  <!-- Prompt section -->
+  <section class="section" id="generate">
+    <div class="section-header">
+      <span class="step-num">01</span>
+      <span class="section-title">Describe your dataset</span>
+    </div>
+
+    <div class="prompt-card">
+      <textarea id="promptInput" class="prompt-textarea"
+        placeholder="e.g. Generate a dataset of 1000 e-commerce customers with age, gender, annual_income, city, and total_purchases. Higher income customers should buy more."></textarea>
+
+      <div class="prompt-footer">
+        <div class="examples-wrap">
+          <span class="examples-label">Quick examples:</span>
+          <div class="chips" id="exampleChips"></div>
+        </div>
+        <div class="prompt-controls">
+          <div class="rows-control">
+            <label for="rowsInput">Rows</label>
+            <input type="number" id="rowsInput" value="500" min="10" max="100000" step="50"/>
+          </div>
+          <button class="btn-primary" id="interpretBtn" onclick="interpretPrompt()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Interpret Prompt
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-bar" id="statusBar" style="display:none">
+      <span class="spinner" id="spinner"></span>
+      <span id="statusText"></span>
+    </div>
+  </section>
+
+  <!-- Schema section -->
+  <section class="section" id="schemaSection" style="display:none">
+    <div class="section-header">
+      <span class="step-num">02</span>
+      <span class="section-title">Generated schema</span>
+      <span class="section-meta" id="schemaDatasetName"></span>
+    </div>
+
+    <div class="schema-grid">
+      <div class="schema-panel">
+        <div class="panel-label">Attributes <span class="count-badge" id="attrCount"></span></div>
+        <div class="attr-list" id="attrList"></div>
+      </div>
+      <div class="schema-panel">
+        <div class="panel-label">Relationships <span class="count-badge" id="relCount"></span></div>
+        <div class="rel-list" id="relList"></div>
+      </div>
+    </div>
+
+    <div class="schema-actions">
+      <button class="btn-primary" id="generateBtn" onclick="generateData()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Generate Dataset
+      </button>
+    </div>
+  </section>
+
+  <!-- Data section -->
+  <section class="section" id="dataSection" style="display:none">
+    <div class="section-header">
+      <span class="step-num">03</span>
+      <span class="section-title">Generated dataset</span>
+    </div>
+
+    <div class="stats-strip" id="statsStrip"></div>
+
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="showTab('preview', this)">Preview</button>
+      <button class="sub-tab" onclick="showTab('stats', this)">Column stats</button>
+    </div>
+
+    <div id="tab-preview" class="tab-panel">
+      <div class="table-wrap">
+        <table class="data-table" id="previewTable"></table>
+      </div>
+      <div class="table-note">Showing first 10 rows of <strong id="totalRowsNote"></strong></div>
+    </div>
+
+    <div id="tab-stats" class="tab-panel" style="display:none">
+      <div class="stats-grid" id="statsGrid"></div>
+    </div>
+
+    <div class="export-section">
+      <div class="export-label">Export as</div>
+      <div class="export-btns">
+        <button class="btn-export" onclick="exportData('csv')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1"/><path d="M4 5h6M4 7.5h6M4 10h4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+          CSV
+        </button>
+        <button class="btn-export" onclick="exportData('json')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1"/><path d="M4 5h6M4 7.5h6M4 10h3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+          JSON
+        </button>
+        <button class="btn-export" onclick="exportData('excel')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1"/><path d="M4 4.5l6 5M10 4.5l-6 5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+          Excel
+        </button>
+        <button class="btn-export" onclick="exportData('parquet')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1"/><path d="M2 5h10M2 9h10" stroke="currentColor" stroke-width="1"/></svg>
+          Parquet
+        </button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <span>SynGen — Synthetic Data Platform</span>
+  <span>Built with FastAPI + Python</span>
+</footer>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
