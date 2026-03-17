@@ -2,6 +2,19 @@
 
 Prompt-driven synthetic data generation with Groq (llama-3.3-70b), FastAPI, and a full statistical engine.
 
+## What's New in v2.0
+
+- **Groq LLM** — llama-3.3-70b-versatile for ultra-fast schema extraction
+- **Advanced distributions** — Normal, Uniform, Lognormal, Poisson, Exponential, Beta, Gamma, Zipf
+- **16+ field types** — UUID, Date, IP, URL, Color, Text, Country, and more
+- **Schema editor** — Add, edit, remove fields via modal UI without re-prompting
+- **Constraints engine** — Conditional field rules (if X = Y then set Z)
+- **Unique enforcement** — Deduplicated fields across the dataset
+- **Nullable control** — Per-field or global null rate
+- **Column stats** — Mean, std, percentiles, histograms, category distributions
+- **Mini charts** — Inline histogram visualizations per numeric field
+- **4 export formats** — CSV, JSON, Excel (formatted), Parquet
+
 ## Quick Start
 
 ```bash
@@ -26,18 +39,6 @@ docker run -p 8000:8000 -e GROQ_API_KEY=your_key syngen
 
 ---
 
-## What's New in v2.0
-
-- **Groq LLM** — llama-3.3-70b-versatile for ultra-fast schema extraction
-- **Advanced distributions** — Normal, Uniform, Lognormal, Poisson, Exponential, Beta, Gamma, Zipf
-- **16+ field types** — UUID, Date, IP, URL, Color, Text, Country, and more
-- **Schema editor** — Add, edit, remove fields via modal UI without re-prompting
-- **Constraints engine** — Conditional field rules (if X = Y then set Z)
-- **Unique enforcement** — Deduplicated fields across the dataset
-- **Nullable control** — Per-field or global null rate
-- **Column stats** — Mean, std, percentiles, histograms, category distributions
-- **Mini charts** — Inline histogram visualizations per numeric field
-- **4 export formats** — CSV, JSON, Excel (formatted), Parquet
 
 ## Project Structure
 
